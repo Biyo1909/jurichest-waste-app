@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent, type MouseEvent } from "react";
 import { ArrowRight, Eye, EyeOff, Leaf, Loader2, LockKeyhole, Mail, MapPin, Menu, MessageCircle, Phone, ShieldCheck, UserRound, X } from "lucide-react";
 import { COMPANY, loginAdmin, loginCustomer, useSession } from "@/lib/store";
+import { urlFor } from "@/lib/base";
 import { Field, Modal } from "@/components/shared";
 
 export type Navigate = (path: string) => void;
@@ -42,9 +43,9 @@ export function SiteHeader({ path, navigate, onLogin }: { path: string; navigate
     <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
       <div className="utility-bar"><div className="container utility-inner"><span><ShieldCheck size={14} /> LAWMA Registered Private Sector Participant</span><a href={`tel:${COMPANY.phones[0]}`}><Phone size={13} /> {COMPANY.phones[0]}</a></div></div>
       <div className="container header-inner">
-        <a href="/" onClick={(event) => go(event, "/")} aria-label="JURICHEST home"><Logo /></a>
+        <a href={urlFor("/")} onClick={(event) => go(event, "/")} aria-label="JURICHEST home"><Logo /></a>
         <nav className="desktop-nav" aria-label="Main navigation">
-          {NAV.map((item) => <a key={item.path} href={item.path} className={path === item.path ? "active" : ""} onClick={(event) => go(event, item.path)}>{item.label}</a>)}
+          {NAV.map((item) => <a key={item.path} href={urlFor(item.path)} className={path === item.path ? "active" : ""} onClick={(event) => go(event, item.path)}>{item.label}</a>)}
         </nav>
         <div className="header-actions">
           <button className="btn btn-primary btn-sm header-login" onClick={session ? () => navigate(session.role === "admin" ? "/admin" : "/portal") : onLogin}>
@@ -53,7 +54,7 @@ export function SiteHeader({ path, navigate, onLogin }: { path: string; navigate
           <button className="btn btn-outline btn-icon menu-toggle" aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open} onClick={() => setOpen(!open)}>{open ? <X size={20} /> : <Menu size={20} />}</button>
         </div>
       </div>
-      {open && <div className="mobile-nav"><nav aria-label="Mobile navigation">{NAV.map((item) => <a key={item.path} href={item.path} className={path === item.path ? "active" : ""} onClick={(event) => go(event, item.path)}>{item.label}<ArrowRight size={16} /></a>)}</nav><a className="mobile-nav-call" href={`tel:${COMPANY.phones[0]}`}><Phone size={16} /> Call {COMPANY.phones[0]}</a></div>}
+      {open && <div className="mobile-nav"><nav aria-label="Mobile navigation">{NAV.map((item) => <a key={item.path} href={urlFor(item.path)} className={path === item.path ? "active" : ""} onClick={(event) => go(event, item.path)}>{item.label}<ArrowRight size={16} /></a>)}</nav><a className="mobile-nav-call" href={`tel:${COMPANY.phones[0]}`}><Phone size={16} /> Call {COMPANY.phones[0]}</a></div>}
     </header>
   );
 }
@@ -136,8 +137,8 @@ export function SiteFooter({ navigate }: { navigate: Navigate }) {
     <footer className="site-footer">
       <div className="container footer-grid">
         <div className="footer-brand"><Logo light /><p>Reliable waste collection for selected streets and estates in Lekki, Lagos. Cleaner neighbourhoods, clearer communication.</p><span className="footer-badge"><ShieldCheck size={15} /> LAWMA Registered PSP · RC {COMPANY.rc}</span></div>
-        <div><h3>Explore</h3>{NAV.map((item) => <a key={item.path} href={item.path} onClick={(event) => { event.preventDefault(); navigate(item.path); }}>{item.label}</a>)}</div>
-        <div><h3>Services</h3><a href="/services" onClick={(event) => { event.preventDefault(); navigate("/services"); }}>Residential collection</a><a href="/services" onClick={(event) => { event.preventDefault(); navigate("/services"); }}>Commercial & estates</a><a href="/services" onClick={(event) => { event.preventDefault(); navigate("/services"); }}>Special collections</a><a href="/portal" onClick={(event) => { event.preventDefault(); navigate("/portal"); }}>Customer portal</a></div>
+        <div><h3>Explore</h3>{NAV.map((item) => <a key={item.path} href={urlFor(item.path)} onClick={(event) => { event.preventDefault(); navigate(item.path); }}>{item.label}</a>)}</div>
+        <div><h3>Services</h3><a href={urlFor("/services")} onClick={(event) => { event.preventDefault(); navigate("/services"); }}>Residential collection</a><a href={urlFor("/services")} onClick={(event) => { event.preventDefault(); navigate("/services"); }}>Commercial & estates</a><a href={urlFor("/services")} onClick={(event) => { event.preventDefault(); navigate("/services"); }}>Special collections</a><a href={urlFor("/portal")} onClick={(event) => { event.preventDefault(); navigate("/portal"); }}>Customer portal</a></div>
         <div className="footer-contact"><h3>Talk to us</h3><a href={`tel:${COMPANY.phones[0]}`}><Phone size={15} />{COMPANY.phones[0]}</a><a href={`tel:${COMPANY.phones[1]}`}><Phone size={15} />{COMPANY.phones[1]}</a><a href={`mailto:${COMPANY.email}`}><Mail size={15} />{COMPANY.email}</a><a href={COMPANY.whatsapp} target="_blank" rel="noreferrer"><MessageCircle size={15} />WhatsApp</a><span><MapPin size={15} />{COMPANY.address}</span></div>
       </div>
       <div className="container footer-bottom"><span>© {new Date().getFullYear()} JURICHEST NIG. LTD. All rights reserved.</span><span>Local demo · no real payments or backend authentication</span></div>

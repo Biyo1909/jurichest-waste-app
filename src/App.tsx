@@ -3,6 +3,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { AccessGate, LoginModal, SiteFooter, SiteHeader, WhatsAppFloat, type Navigate } from "@/components/site-shell";
 import { useDocumentTitle } from "@/components/shared";
 import { useSession } from "@/lib/store";
+import { normalize, pathFromLocation, urlFor } from "@/lib/base";
 import { AboutPage, AreasPage, ContactPage, FaqPage, HomePage, NotFoundPage, ServicesPage } from "@/pages/Public";
 import Portal from "@/pages/Portal";
 import Admin from "@/pages/Admin";
@@ -19,13 +20,8 @@ const TITLES: Record<string, string> = {
   "/admin": "Admin workspace",
 };
 
-function normalize(path: string) {
-  const clean = path.split("?")[0].replace(/\/+$/, "");
-  return clean === "" ? "/" : clean;
-}
-
 export default function App() {
-  const [path, setPath] = useState(() => normalize(window.location.pathname));
+  const [path, setPath] = useState(pathFromLocation);
   const [loading, setLoading] = useState(true);
   const [loaderKey, setLoaderKey] = useState(0);
   const [loginOpen, setLoginOpen] = useState(false);
@@ -34,11 +30,11 @@ export default function App() {
 
   const navigate = useCallback<Navigate>((target) => {
     const next = normalize(target);
-    if (next === normalize(window.location.pathname)) {
+    if (next === pathFromLocation()) {
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
-    window.history.pushState({}, "", next);
+    window.history.pushState({}, "", urlFor(next));
     setPath(next);
     window.scrollTo(0, 0);
     setLoaderKey((key) => key + 1);
@@ -47,7 +43,7 @@ export default function App() {
 
   useEffect(() => {
     const onPop = () => {
-      setPath(normalize(window.location.pathname));
+      setPath(pathFromLocation());
       window.scrollTo(0, 0);
       setLoaderKey((key) => key + 1);
       setLoading(true);
