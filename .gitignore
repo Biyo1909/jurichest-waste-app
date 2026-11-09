@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.tools/
+.qoder/
+.env
+.env.*
+!.env.example
+.DS_Store
+*.tsbuildinfo
+.qoder-sites/
+.qoder-sites.json
